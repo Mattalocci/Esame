@@ -1,25 +1,51 @@
-﻿namespace Esame
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using static System.Net.WebRequestMethods;
+
+namespace Esame
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
-
+        RestService service;
+        public ObservableCollection<Product> Products { get; set; } = new();
         public MainPage()
         {
             InitializeComponent();
+            service = new RestService();
+
+            BindingContext = this;
+           
+
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        protected override async void OnAppearing()
         {
-            count++;
+            base.OnAppearing();
+            await LoadProducts();
+        }
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+        private async Task LoadProducts()
+        {
+            var list = await service.GetProductsAsync();
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            Products.Clear();
+            foreach (var item in list)
+                Products.Add(item);
+        }
+
+        
+        private async void OnButtonClicked(object sender, EventArgs e)
+        {
+            var service = new RestService();
+            var product = await service.GetProductsAsync();
+        }
+
+        private async void OnSelectionChanged(object sender, EventArgs e)
+        {
+
+
         }
     }
-
 }
+
