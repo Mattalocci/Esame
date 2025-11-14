@@ -1,14 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using static System.Net.WebRequestMethods;
+
 
 namespace Esame
 {
     public partial class MainPage : ContentPage
     {
         RestService service;
-        public ObservableCollection<Product> Products { get; set; } = new();
+        public ObservableCollection<Product> Items { get; set; } = new();
         public MainPage()
         {
             InitializeComponent();
@@ -19,21 +19,26 @@ namespace Esame
 
         }
 
-        protected override async void OnAppearing()
+        protected async override void OnNavigatedTo(NavigatedToEventArgs args)
         {
-            base.OnAppearing();
-            await LoadProducts();
+            base.OnNavigatedTo(args);
+
+            var products = await service.GetProductsAsync();
+            foreach (var p in products)
+            {
+                Items.Add(p);
+            }
         }
 
-        private async Task LoadProducts()
+        private async void ProductsCollection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var list = await service.GetProductsAsync();
-
-            Products.Clear();
-            foreach (var item in list)
-                Products.Add(item);
+            if (e.CurrentSelection.FirstOrDefault() is not Product item)
+                return;
+            await Shell.Current.GoToAsync(nameof(ProductPage), true, new Dictionary<string, object>
+            {
+                ["Item"] = item
+            });
         }
-
         
         private async void OnButtonClicked(object sender, EventArgs e)
         {
@@ -41,9 +46,15 @@ namespace Esame
             var product = await service.GetProductsAsync();
         }
 
-        private async void OnSelectionChanged(object sender, EventArgs e)
+        private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.CurrentSelection.FirstOrDefault() is not Product item)
+                return;
 
+            await Shell.Current.GoToAsync(nameof(ProductPage), true, new Dictionary<string, object>
+            {
+                ["Item"] = item
+            });
 
         }
     }

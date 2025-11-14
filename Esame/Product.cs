@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Esame
 {
-    public class Product
+    public class Product 
     {
         public int ID { get; set; }
         public string Title { get; set; }

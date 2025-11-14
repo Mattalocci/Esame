@@ -4,27 +4,30 @@
              x:Class="Esame.MainPage"
              
              >
-            
-
-    <ScrollView>
+     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
             <CollectionView
                 x:Name=" MyCollectionView"
+                
                 SelectionMode = "Single"
                 SelectionChanged="OnSelectionChanged"
                 ItemsSource= "{Binding Items}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <HorizontalStackLayout>
+                        <HorizontalStackLayout
+                            Padding="20">
                             <Label Text="{Binding Name}"/>
                             <Label Text="{Binding Price}"/>
-                            <Image Source="{Binding Image}"/>
+                            <Image Source="{Binding Image}"
+                                   WidthRequest="50" HeightRequest="50"/>
                         </HorizontalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            
+            
         </VerticalStackLayout>
     </ScrollView>
 
